@@ -22,7 +22,8 @@ class PokerViewModel : ViewModel() {
     private val _roomCodeInput = MutableStateFlow("")
     val roomCodeInput: StateFlow<String> = _roomCodeInput.asStateFlow()
 
-    private val _serverUrlInput = MutableStateFlow("ws://10.0.2.2:8080")
+    // private val _serverUrlInput = MutableStateFlow("ws://10.0.2.2:8080")
+    private val _serverUrlInput = MutableStateFlow("wss://66.241.125.68:8080")
     val serverUrlInput: StateFlow<String> = _serverUrlInput.asStateFlow()
 
     private val _startingStackInput = MutableStateFlow(1000)

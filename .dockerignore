@@ -1,0 +1,22 @@
+# Ignore Android build artifacts, Gradle caches, and local files when building the server container
+.git
+.gitignore
+.gradle
+.kotlin
+.idea
+.DS_Store
+app
+build
+gradle
+gradlew
+gradlew.bat
+build.gradle.kts
+settings.gradle.kts
+gradle.properties
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+README.md
+fly.toml

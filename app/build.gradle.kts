@@ -18,6 +18,9 @@ android {
   buildTypes {
     release {
       isMinifyEnabled = false
+      // Fallback to debug signing config if no custom release keystore is configured so
+      // `./gradlew assembleRelease` produces an installable signed APK out of the box.
+      signingConfig = signingConfigs.getByName("debug")
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
