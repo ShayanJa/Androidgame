@@ -44,7 +44,7 @@ class PokerNetworkClient(
 ) {
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
     private val okHttp = OkHttpClient.Builder()
-        .connectTimeout(3, TimeUnit.SECONDS)
+        .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(0, TimeUnit.MILLISECONDS)
         .pingInterval(15, TimeUnit.SECONDS)
         .build()
@@ -105,6 +105,7 @@ class PokerNetworkClient(
             request,
             object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
+                    if (webSocket !== this@PokerNetworkClient.webSocket) return
                     _connectionState.value = ConnectionState.CONNECTED
                     pendingCommandAfterConnect?.let { cmd ->
                         pendingCommandAfterConnect = null
@@ -115,10 +116,12 @@ class PokerNetworkClient(
                 }
 
                 override fun onMessage(webSocket: WebSocket, text: String) {
+                    if (webSocket !== this@PokerNetworkClient.webSocket) return
                     handleIncomingMessage(text)
                 }
 
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                    if (webSocket !== this@PokerNetworkClient.webSocket) return
                     // If external server wasn't reachable, transparently fall back to embedded room server
                     if (!_usingEmbeddedFallback.value) {
                         scope.launch(Dispatchers.IO) {
@@ -135,6 +138,7 @@ class PokerNetworkClient(
                 }
 
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                    if (webSocket !== this@PokerNetworkClient.webSocket) return
                     _connectionState.value = ConnectionState.DISCONNECTED
                 }
             }

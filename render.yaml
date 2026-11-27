@@ -1,0 +1,17 @@
+# Render Blueprint for Heads-Up Poker Multiplayer WebSocket Server
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: android-poker
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: ohio
+    healthCheckPath: /status
+    numInstances: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "8080"

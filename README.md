@@ -42,20 +42,20 @@ Deploying the project consists of hosting the stateful Node.js WebSocket server 
 
 > **Important (Stateful Architecture):** Active rooms and matchmaking queues are stored **in-memory** inside the Node.js process. Deploy the server as a **single stateful instance** (do not use serverless functions like Vercel/Lambda, and disable scale-to-zero or multi-instance horizontal scaling unless sticky sessions/Redis are added).
 
-#### Option A: Container PaaS (Fly.io / Railway / Render)
-1. **Dockerfile** (example):
-   ```dockerfile
-   FROM node:22-alpine
-   WORKDIR /app
-   COPY server/poker_server.mjs ./server/poker_server.mjs
-   ENV PORT=8080
-   EXPOSE 8080
-   CMD ["node", "server/poker_server.mjs"]
+#### Option A: Container PaaS (Fly.io / Render / Railway)
+1. **Fly.io** (uses [fly.toml](fly.toml) + [Dockerfile](Dockerfile)):
+   ```bash
+   fly deploy
    ```
-2. **Configuration**:
+   - WebSocket URL: `wss://android-poker.fly.dev`
+2. **Render (`onrender.com`)** (uses [render.yaml](render.yaml) + [Dockerfile](Dockerfile)):
+   - Push this repo to GitHub/GitLab, then in the Render Dashboard choose **New + -> Blueprint** and select this repository (or create a **Web Service** with **Docker** runtime and Health Check Path `/status`).
+   - Render terminates TLS automatically and provides `wss://<your-service>.onrender.com`.
+   - *Note:* Render's `free` plan spins down after 15 minutes of inactivity (clearing in-memory rooms); upgrade to `starter` for an always-on single instance.
+3. **Configuration**:
    - **Start Command**: `node server/poker_server.mjs`
    - **Health Check Path**: `/status`
-   - **Scaling**: Keep `1` persistent instance running (`min_machines_running = 1` on Fly.io).
+   - **Scaling**: Keep `1` persistent instance running (`min_machines_running = 1` on Fly.io, `numInstances: 1` on Render).
    - **TLS**: Your host will terminate TLS automatically and provide a `wss://<your-domain>` WebSocket endpoint.
 
 #### Option B: VPS (DigitalOcean / Hetzner / Linode)
